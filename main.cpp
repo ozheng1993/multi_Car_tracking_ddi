@@ -513,7 +513,6 @@ int main( int argc, char** argv ){
             }
             
         }
-        
         trackers.update(frame);
         imshow("tracker",frame);
         //quit on ESC button
