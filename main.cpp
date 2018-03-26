@@ -34,7 +34,7 @@ vector<bool> lost;
 bool fromCenter=false;
 //cover unit
 double pixelToMeterfinal=0;
-
+double meterToMPH=2.23694;
 //real length 11feet to 3.3528;
 double reallMeter=3.3528;
 //pixel
@@ -44,7 +44,8 @@ int rModifer=100;
 int gModifer=0;
 int bModifer=10;
 //skip frame
- int skipFrame=6;
+int skipFrame=6;
+
  vector< vector<Point> >  roiPoint;
 ///
 
@@ -178,7 +179,7 @@ int main( int argc, char** argv ){
     string fileName="./"+video+".csv";
     ofstream outfile;
     outfile.open(fileName);
-    outfile<<"frameNUM"<<","<<"time"<<","<< "id"<<","<<"width"<<","<<"height"<<","<<"x"<<","<<"y"<<","<<"pixel_speed(every "<<skipFrame<<" frame)"<<",""speed(m/s)"<<",";
+    outfile<<"frameNUM"<<","<<"time(s)"<<","<< "id"<<","<<"width(m)"<<","<<"height(m)"<<","<<"x"<<","<<"y"<<","<<"pixel_speed(every "<<skipFrame<<" frame)"<<","<<"speed(m/s)"<<","<<"speed(mph)"<<",";
     cap>>frame;
      resize(frame, frame, cv::Size(), 0.5, 0.5);
    //  frame= resizeWindow(frame);
@@ -345,9 +346,19 @@ int main( int argc, char** argv ){
                  2,
                  LINE_8
                  );
-        double lineDist=sqrt(pow((line1x1-line1y1),2)-pow((line1x2-line1y2),2));
-       // cout<<"linedistance"<<lineDist<<endl;
         
+        
+        double xdiff=line1x1-line1x2;
+        double ydiff=line1y1-line1y2;
+        double ydiff2=ydiff*ydiff;
+         double xdiff2=xdiff*xdiff;
+        
+        
+        double lineDist=sqrt(ydiff2+xdiff2);
+        cout<<"xdiff2"<<xdiff2<<endl;
+        cout<<"ydiff2"<<ydiff2<<endl;
+       cout<<"linedistance"<<lineDist<<endl;
+         cout<<"reallMeter"<<reallMeter<<endl;
         pixelToMeterfinal=lineDist/reallMeter;
         // cout<<"ptm"<<lineDist<<endl;
         
@@ -450,11 +461,11 @@ int main( int argc, char** argv ){
                     lastX[i]=preX[i];
                     lastY[i]=preY[i];
                     speed[i]=sqrt((speedX[i]*speedX[i])-(speedY[i]*speedY[i]));
-                    
+                 
                     if(speed[i]>5&&start[i]==false)
                     {
                         outfile<<endl;
-                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width<<","<<rects[i].height<<","<<preX[i]<<","<<preY[i]<<","<<"start"<<","<<"start"<<",";
+                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"start"<<","<<"start"<<",";
                         start[i]=true;
                     }
                    // speedPreAvg[i]+=speed[i];
@@ -467,15 +478,13 @@ int main( int argc, char** argv ){
 //                    cout<< "yY" <<speedY[i]<<endl;
 //                    cout<<"speed" <<speed[i]<<endl;
 //                    cout<< "avg" << speedPreAvg[i]<<endl;
-                    
                 }
-                
-       
+
             if(finish[i]==false&&preX[i]>1700)
             {
                 cout<<"finsihedddddddddddd"<<endl;
                 outfile<<endl;
-                    outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width<<","<<rects[i].height<<","<<preX[i]<<","<<preY[i]<<","<<"finished"<<","<<"finished"<<",";
+                    outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"finished"<<","<<"finished"<<","<<"finished"<<",";
                 finish[i]=true;
             }
             else if(finish[i]==false)
@@ -486,7 +495,7 @@ int main( int argc, char** argv ){
                         //cout<<"coutttt"<<lostcount[i]<<endl;
                         lostcount[i]++;
                         outfile<<endl;
-                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width<<","<<rects[i].height<<","<<preX[i]<<","<<preY[i]<<","<<"lost"<<","<<"lost"<<",";
+                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"lost"<<","<<"lost"<<","<<"lost"<<",";
                          rectangle( frame, trackers.getObjects()[i], Scalar( 0, 0, 255 ), 0.01, 1 );
                         cv::putText(frame,to_string(i),
                                     cv::Point(trackers.getObjects()[i].x+50,trackers.getObjects()[i].y+20), // Coordinates
@@ -505,13 +514,13 @@ int main( int argc, char** argv ){
                                     cv::Scalar(0,255,0), // Color
                                     1); // Anti-alias // show image with the tracked object
                         
-                        double finalSpeed=speed[i]/pixelToMeterfinal/skipFrame*59.97;
+                        double finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
                         outfile<<endl;
-                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," <<i<<","<<rects[i].width<<","<<rects[i].height<<","<<preX[i]<<","<<preY[i]<<","<< speed[i]<<","<<finalSpeed<<",";
+                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," <<i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<  speed[i]<<","<<finalSpeed<<","<<finalSpeed*meterToMPH<<",";
                     }
                 }
             }
-            
+           
         }
         trackers.update(frame);
         imshow("tracker",frame);
