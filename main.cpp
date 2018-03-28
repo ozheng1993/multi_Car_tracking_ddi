@@ -44,7 +44,7 @@ int rModifer=100;
 int gModifer=0;
 int bModifer=10;
 //skip frame
-int skipFrame=6;
+int skipFrame=3;
 
  vector< vector<Point> >  roiPoint;
 ///
@@ -163,12 +163,13 @@ int main( int argc, char** argv ){
     std::string video = argv[1];
     VideoCapture cap(video);
 // skip frame function
-//    Ptr<Tracker> tracker;
+   // Ptr<Tracker> tracker;
+//    Mat framePre;
 //    for( int x = 0; x < 5000; x++ ) {
-    //cap>>frame;
-    //}
-    
-    
+//    cap>>framePre;
+//    }
+//
+//
     
     
     
@@ -465,7 +466,7 @@ int main( int argc, char** argv ){
                     if(speed[i]>5&&start[i]==false)
                     {
                         outfile<<endl;
-                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"start"<<","<<"start"<<",";
+                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"start"<<","<<"start"<<",";
                         start[i]=true;
                     }
                    // speedPreAvg[i]+=speed[i];
@@ -484,7 +485,7 @@ int main( int argc, char** argv ){
             {
                 cout<<"finsihedddddddddddd"<<endl;
                 outfile<<endl;
-                    outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"finished"<<","<<"finished"<<","<<"finished"<<",";
+                    outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"finished"<<","<<"finished"<<","<<"finished"<<",";
                 finish[i]=true;
             }
             else if(finish[i]==false)
@@ -495,7 +496,7 @@ int main( int argc, char** argv ){
                         //cout<<"coutttt"<<lostcount[i]<<endl;
                         lostcount[i]++;
                         outfile<<endl;
-                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"lost"<<","<<"lost"<<","<<"lost"<<",";
+                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"lost"<<","<<"lost"<<","<<"lost"<<",";
                          rectangle( frame, trackers.getObjects()[i], Scalar( 0, 0, 255 ), 0.01, 1 );
                         cv::putText(frame,to_string(i),
                                     cv::Point(trackers.getObjects()[i].x+50,trackers.getObjects()[i].y+20), // Coordinates
@@ -516,7 +517,7 @@ int main( int argc, char** argv ){
                         
                         double finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
                         outfile<<endl;
-                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," <<i<<","<<rects[i].width/pixelToMeterfinal<<","<<rects[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<  speed[i]<<","<<finalSpeed<<","<<finalSpeed*meterToMPH<<",";
+                        outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," <<i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<  speed[i]<<","<<finalSpeed<<","<<finalSpeed*meterToMPH<<",";
                     }
                 }
             }
@@ -524,6 +525,7 @@ int main( int argc, char** argv ){
         }
         trackers.update(frame);
         imshow("tracker",frame);
+        frame.release();
         //quit on ESC button
       //  if(waitKey(1)==27)break;
     }
