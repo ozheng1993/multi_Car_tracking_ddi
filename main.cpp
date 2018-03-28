@@ -515,15 +515,15 @@ int main( int argc, char** argv ){
                                     0.5, // Scale. 2.0 = 2x bigger
                                     cv::Scalar(0,255,0), // Color
                                     1); // Anti-alias // show image with the tracked object
-                        
+                        double finalSpeed=0.0;
                         
 			if(speed[i]>=1)
 			{
-			double finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
+			 finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
 
 			}
 			else{
-			double finalSpeed=0.0;
+			 finalSpeed=0.0;
 			}
 
                         outfile<<endl;
