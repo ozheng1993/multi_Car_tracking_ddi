@@ -315,6 +315,8 @@ int main( int argc, char** argv ){
 //    printf("Start the tracking process, press ESC to quit.\n");
 //
 //
+    
+    
 //
 //    for(;;)
 //    {
@@ -419,7 +421,7 @@ int main( int argc, char** argv ){
         string frameNumberString = ss.str();
         string fpsNumberString = fps.str();
         string timeNumberString = st.str();
-        double timeFrame=stod(timeNumberString)/1000;
+        double timeFrame=stod(timeNumberString)/1000+40;
       //  string timeNumberString = st.str();
         putText(frame, frameNumberString.c_str(), cv::Point(15, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
