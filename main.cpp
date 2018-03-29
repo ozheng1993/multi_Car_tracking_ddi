@@ -142,6 +142,7 @@ Mat resizeWindow(Mat frame)
     srcROI.copyTo(dst1,mask);
     return dst1;
 }
+
 int keyboard; //input from keyboard
 void processVideo(char* videoFilename);
 int main( int argc, char** argv ){
@@ -164,10 +165,11 @@ int main( int argc, char** argv ){
     VideoCapture cap(video);
 // skip frame function
    // Ptr<Tracker> tracker;
-//    Mat framePre;
-//    for( int x = 0; x < 5000; x++ ) {
-//    cap>>framePre;
-//    }
+   Mat framePre;
+    for( int x = 0; x < 15680; x++ ) {
+   cap>>framePre;
+  }
+framePre.release();
 //
 //
     
@@ -413,11 +415,13 @@ int main( int argc, char** argv ){
         stringstream ss;
         stringstream st;
         stringstream fps;
+	stringstream totalss;
         rectangle(frame, cv::Point(10, 2), cv::Point(450,20),
                   cv::Scalar(255,255,255), -1);
         ss << cap.get(CAP_PROP_POS_FRAMES);
         fps << cap.get(CAP_PROP_FPS);
         st << cap.get( CAP_PROP_POS_MSEC);
+	totalss << cap.get( CAP_PROP_FRAME_COUNT);
         string frameNumberString = ss.str();
         string fpsNumberString = fps.str();
         string timeNumberString = st.str();
@@ -425,9 +429,13 @@ int main( int argc, char** argv ){
       //  string timeNumberString = st.str();
         putText(frame, frameNumberString.c_str(), cv::Point(15, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-        putText(frame, fpsNumberString.c_str(), cv::Point(70, 15),
+putText(frame, totalFrameNumberString.c_str(), cv::Point(70, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-        putText(frame, to_string(timeFrame), cv::Point(190, 15),
+
+
+        putText(frame, fpsNumberString.c_str(), cv::Point(170, 15),
+                FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
+        putText(frame, to_string(timeFrame), cv::Point(320, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
         // stop the program if no more images
         if(frame.rows==0 || frame.cols==0)
@@ -503,7 +511,7 @@ int main( int argc, char** argv ){
                         cv::putText(frame,to_string(i),
                                     cv::Point(trackers.getObjects()[i].x+50,trackers.getObjects()[i].y+20), // Coordinates
                                     cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
-                                    2, // Scale. 2.0 = 2x bigger
+                                    0.5, // Scale. 2.0 = 2x bigger
                                     cv::Scalar(0,0,255), // Color
                                     1); // Anti-alias // show image with the tracked object
                     }
@@ -513,11 +521,20 @@ int main( int argc, char** argv ){
                         cv::putText(frame,to_string(i),
                                     cv::Point(trackers.getObjects()[i].x+50,trackers.getObjects()[i].y+20), // Coordinates
                                     cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
-                                    2, // Scale. 2.0 = 2x bigger
+                                    0.5, // Scale. 2.0 = 2x bigger
                                     cv::Scalar(0,255,0), // Color
                                     1); // Anti-alias // show image with the tracked object
+                        double finalSpeed=0.0;
                         
-                        double finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
+			if(speed[i]>2)
+			{
+			 finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
+
+			}
+			else{
+			 finalSpeed=0.0;
+			}
+
                         outfile<<endl;
                         outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," <<i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<  speed[i]<<","<<finalSpeed<<","<<finalSpeed*meterToMPH<<",";
                     }
