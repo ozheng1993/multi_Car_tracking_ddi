@@ -411,6 +411,7 @@ int main( int argc, char** argv ){
             }
             trackers.add(algorithm2s,frame,rectsObject2s);
         }
+        
         stringstream ss;
         stringstream st;
         stringstream fps;
