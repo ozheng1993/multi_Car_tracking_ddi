@@ -1,4 +1,5 @@
 //ou zheng
+
 #include <opencv2/core/utility.hpp>
 #include <opencv2/tracking.hpp>
 #include <opencv2/videoio.hpp>
@@ -46,44 +47,44 @@ int bModifer=10;
 //skip frame
 int skipFrame=3;
 
- vector< vector<Point> >  roiPoint;
+vector< vector<Point> >  roiPoint;
 ///
 
-    // container of the tracked objects
-    vector<Rect2d> rectsObjects;
-    vector<Rect> rects;
-    vector<Ptr<Tracker>> algorithms;
-    void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+// container of the tracked objects
+vector<Rect2d> rectsObjects;
+vector<Rect> rects;
+vector<Ptr<Tracker>> algorithms;
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+    if  ( event == EVENT_LBUTTONDOWN )
     {
-        if  ( event == EVENT_LBUTTONDOWN )
-        {
-            cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-            cv::circle(frameMat,
-                       cv::Point(x,y),
+        cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+        cv::circle(frameMat,
+                   cv::Point(x,y),
                    3,
-                     cv::Scalar(255,0,0),
-                     -1,
-                     LINE_8
-                     );
-            
-            roiPoint.push_back(vector<Point>());
-            roiPoint[0].push_back( Point(x,y));
-            cout<<roiPoint[0]<<endl;
-        }
-        else if  ( event == EVENT_RBUTTONDOWN )
-        {
-            cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-        }
-        else if  ( event == EVENT_MBUTTONDOWN )
-        {
-            cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-        }
-        else if ( event == EVENT_MOUSEMOVE )
-        {
-            cout << "Mouse move over the window - position (" << x << ", " << y << ")" << endl;
-        }
+                   cv::Scalar(255,0,0),
+                   -1,
+                   LINE_8
+                   );
         
+        roiPoint.push_back(vector<Point>());
+        roiPoint[0].push_back( Point(x,y));
+        cout<<roiPoint[0]<<endl;
     }
+    else if  ( event == EVENT_RBUTTONDOWN )
+    {
+        cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+    }
+    else if  ( event == EVENT_MBUTTONDOWN )
+    {
+        cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+    }
+    else if ( event == EVENT_MOUSEMOVE )
+    {
+        cout << "Mouse move over the window - position (" << x << ", " << y << ")" << endl;
+    }
+    
+}
 
 double drwaLine(Mat frame, int x1, int y1, int x2, int y2)
 {
@@ -142,7 +143,6 @@ Mat resizeWindow(Mat frame)
     srcROI.copyTo(dst1,mask);
     return dst1;
 }
-
 int keyboard; //input from keyboard
 void processVideo(char* videoFilename);
 int main( int argc, char** argv ){
@@ -155,23 +155,22 @@ int main( int argc, char** argv ){
         << endl;
         return 0;
     }
-       namedWindow("My Window", CV_WINDOW_AUTOSIZE);
-       namedWindow("tracker", CV_WINDOW_AUTOSIZE);
-     //namedWindow("My Window", 1);
+    namedWindow("My Window", CV_WINDOW_AUTOSIZE);
+    namedWindow("tracker", CV_WINDOW_AUTOSIZE);
+    //namedWindow("My Window", 1);
     //create the tracker
     MultiTracker trackers;
     // set input video
     std::string video = argv[1];
     VideoCapture cap(video);
-// skip frame function
-   // Ptr<Tracker> tracker;
-   Mat framePre;
-    for( int x = 0; x < 15680; x++ ) {
-   cap>>framePre;
-  }
-framePre.release();
-//
-//
+    // skip frame function
+    // Ptr<Tracker> tracker;
+    //    Mat framePre;
+    //    for( int x = 0; x < 5000; x++ ) {
+    //    cap>>framePre;
+    //    }
+    //
+    //
     
     
     
@@ -184,8 +183,8 @@ framePre.release();
     outfile.open(fileName);
     outfile<<"frameNUM"<<","<<"time(s)"<<","<< "id"<<","<<"width(m)"<<","<<"height(m)"<<","<<"x"<<","<<"y"<<","<<"pixel_speed(every "<<skipFrame<<" frame)"<<","<<"speed(m/s)"<<","<<"speed(mph)"<<",";
     cap>>frame;
-     resize(frame, frame, cv::Size(), 0.5, 0.5);
-   //  frame= resizeWindow(frame);
+    resize(frame, frame, cv::Size(), 0.5, 0.5);
+    //  frame= resizeWindow(frame);
     //    resize(frame, frame, cv::Size(), 0.5, 0.5);
     //Rect Rec(0, 500, 1900, 380);
     //rectangle(frame, Rec, Scalar(255), 10, 8, 0);
@@ -197,100 +196,100 @@ framePre.release();
     //set the callback function for any mouse event
     setMouseCallback("My Window", CallBackFunc, NULL);
     //show the image
-  
-//     cout<<"please select ROI"<<endl;
-//    rectangle(frameMat, cv::Point(10, 2), cv::Point(450,20),
-//              cv::Scalar(255,255,255), -1);
-//    string displayInfor="please select ROI by left click mouse,esc to cancle,entry to finish";
-//    putText(frame, displayInfor.c_str(), cv::Point(15, 15),
-//            FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-      ///set scale set roi
-//    for(;;)
-//    {
-//        imshow("My Window", frameMat);
-//        if(waitKey(1)==27)
-//        {
-//            roiPoint[0].pop_back();
-//            cv::circle(frameMat,
-//                       cv::Point(roiPoint[0][roiPoint[0].size()].x,roiPoint[0][roiPoint[0].size()].y),
-//                       3,
-//                       cv::Scalar(0,255,0),
-//                       -1,
-//                       LINE_8
-//                       );
-//
-//            cout<<"esc pressed"<<roiPoint[0][0].x<<endl;
-//
-//        }
-//        else if(waitKey(1)==13)
-//        {
-//            cout<<"entry key predded"<<endl;
-//            frame= resizeWindow(frame);
-//            // close the window
-//           //DestroyWindow("My Window");
-//           frameMat.release();
-//            break;
-//        }
-//    }
     
-//    ///set scale
-//    for(;;)
-//    {
-//        imshow("My Window", frameMat);
-//        if(waitKey(1)==27)
-//        {
-//            roiPoint[0].pop_back();
-//            cv::circle(frameMat,
-//                       cv::Point(roiPoint[0][roiPoint[0].size()].x,roiPoint[0][roiPoint[0].size()].y),
-//                       3,
-//                       cv::Scalar(0,255,0),
-//                       -1,
-//                       LINE_8
-//                       );
-//
-//            cout<<"esc pressed"<<roiPoint[0][0].x<<endl;
-//
-//        }
-//        else if(waitKey(1)==13)
-//        {
-//            cout<<"entry key predded"<<endl;
-//            frame= resizeWindow(frame);
-//            // close the window
-//            //DestroyWindow("My Window");
-//            frameMat.release();
-//            break;
-//        }
-//    }
-//
-
+    //     cout<<"please select ROI"<<endl;
+    //    rectangle(frameMat, cv::Point(10, 2), cv::Point(450,20),
+    //              cv::Scalar(255,255,255), -1);
+    //    string displayInfor="please select ROI by left click mouse,esc to cancle,entry to finish";
+    //    putText(frame, displayInfor.c_str(), cv::Point(15, 15),
+    //            FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
+    ///set scale set roi
+    //    for(;;)
+    //    {
+    //        imshow("My Window", frameMat);
+    //        if(waitKey(1)==27)
+    //        {
+    //            roiPoint[0].pop_back();
+    //            cv::circle(frameMat,
+    //                       cv::Point(roiPoint[0][roiPoint[0].size()].x,roiPoint[0][roiPoint[0].size()].y),
+    //                       3,
+    //                       cv::Scalar(0,255,0),
+    //                       -1,
+    //                       LINE_8
+    //                       );
+    //
+    //            cout<<"esc pressed"<<roiPoint[0][0].x<<endl;
+    //
+    //        }
+    //        else if(waitKey(1)==13)
+    //        {
+    //            cout<<"entry key predded"<<endl;
+    //            frame= resizeWindow(frame);
+    //            // close the window
+    //           //DestroyWindow("My Window");
+    //           frameMat.release();
+    //            break;
+    //        }
+    //    }
     
-//    //filtering image
-//    for( int x = 0; x < frame.rows; x++ ) {
-//        for( int y = 0; y < frame.cols; y++ )
-//        {
-//            if (
-//                frame.at<Vec3b>(x, y)[0]<= 80&&frame.at<Vec3b>(x, y)[0]>= 20&&
-//                frame.at<Vec3b>(x, y)[1]<= 80&&frame.at<Vec3b>(x, y)[1]>= 20&&
-//                frame.at<Vec3b>(x, y)[2]<= 80&&frame.at<Vec3b>(x, y)[2]>= 20
-//
-//                )
-//            {
-//                frame.at<Vec3b>(x, y)[0] +=rModifer;
-//                frame.at<Vec3b>(x, y)[1] +=gModifer;
-//                frame.at<Vec3b>(x, y)[2]+=bModifer;
-//            }
-//        }
-//    }
+    //    ///set scale
+    //    for(;;)
+    //    {
+    //        imshow("My Window", frameMat);
+    //        if(waitKey(1)==27)
+    //        {
+    //            roiPoint[0].pop_back();
+    //            cv::circle(frameMat,
+    //                       cv::Point(roiPoint[0][roiPoint[0].size()].x,roiPoint[0][roiPoint[0].size()].y),
+    //                       3,
+    //                       cv::Scalar(0,255,0),
+    //                       -1,
+    //                       LINE_8
+    //                       );
+    //
+    //            cout<<"esc pressed"<<roiPoint[0][0].x<<endl;
+    //
+    //        }
+    //        else if(waitKey(1)==13)
+    //        {
+    //            cout<<"entry key predded"<<endl;
+    //            frame= resizeWindow(frame);
+    //            // close the window
+    //            //DestroyWindow("My Window");
+    //            frameMat.release();
+    //            break;
+    //        }
+    //    }
+    //
+    
+    
+    //    //filtering image
+    //    for( int x = 0; x < frame.rows; x++ ) {
+    //        for( int y = 0; y < frame.cols; y++ )
+    //        {
+    //            if (
+    //                frame.at<Vec3b>(x, y)[0]<= 80&&frame.at<Vec3b>(x, y)[0]>= 20&&
+    //                frame.at<Vec3b>(x, y)[1]<= 80&&frame.at<Vec3b>(x, y)[1]>= 20&&
+    //                frame.at<Vec3b>(x, y)[2]<= 80&&frame.at<Vec3b>(x, y)[2]>= 20
+    //
+    //                )
+    //            {
+    //                frame.at<Vec3b>(x, y)[0] +=rModifer;
+    //                frame.at<Vec3b>(x, y)[1] +=gModifer;
+    //                frame.at<Vec3b>(x, y)[2]+=bModifer;
+    //            }
+    //        }
+    //    }
     //cvtColor( frame, frame, CV_BGR2GRAY );
     //threshold( frame, frame, 127, 255,1 );
     //draw line
     ///line1
-  string displayInfor="choose kcf object";
+    string displayInfor="choose kcf object";
     putText(frame, displayInfor.c_str(), cv::Point(15, 15),
             FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-
+    
     selectROIs("tracker",frame,rects,fromCenter);
-   // cout<<rects.size()<<endl;
+    // cout<<rects.size()<<endl;
     for(int i=0;i<rects.size();i++)
     {
         preX.push_back(0);
@@ -308,31 +307,31 @@ framePre.release();
         speedAvg.push_back(0);
         speedPreAvg.push_back(0);
         cout<<"car:"<<i<<" x: "<<rects[i].x<<" y: "<<rects[i].y<<endl;
-       // algorithms.push_back(TrackerKCF::create());
+        // algorithms.push_back(TrackerKCF::create());
         rectsObjects.push_back(rects[i]);
         algorithms.push_back(TrackerKCF::create());
     }
     trackers.add(algorithms,frame,rectsObjects);
-//     perform the tracking process
-//    printf("Start the tracking process, press ESC to quit.\n");
-//
-//
+    //     perform the tracking process
+    //    printf("Start the tracking process, press ESC to quit.\n");
+    //
+    //
     
     
-//
-//    for(;;)
-//    {
-//    if(waitKey(1)==27)break;
-//        cout<<"wait for roi"<<endl;
-//    }
-//
+    //
+    //    for(;;)
+    //    {
+    //    if(waitKey(1)==27)break;
+    //        cout<<"wait for roi"<<endl;
+    //    }
+    //
     for(;;)
     {
         string displayInfor="kcf start";
         putText(frame, displayInfor.c_str(), cv::Point(15, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
         //roi=selectROI("tracker",frame);
-       // cout<<roiPoint[0]<<endl;
+        // cout<<roiPoint[0]<<endl;
         cap>>frame;
         resize(frame, frame, cv::Size(), 0.5, 0.5);
         double line1x1=929;
@@ -341,7 +340,7 @@ framePre.release();
         double line1y2=461;
         //drwaLine(frame,line1x1,line1y1,line1x2,line1y2);
         //cout<<"draw line"<<drwaLine(frame,line1x1,line1y1,line1x2,line1y2)<<endl;
-       
+        
         
         cv::line(frame,
                  cv::Point(line1x1,line1y1)
@@ -356,14 +355,14 @@ framePre.release();
         double xdiff=line1x1-line1x2;
         double ydiff=line1y1-line1y2;
         double ydiff2=ydiff*ydiff;
-         double xdiff2=xdiff*xdiff;
+        double xdiff2=xdiff*xdiff;
         
         
         double lineDist=sqrt(ydiff2+xdiff2);
         cout<<"xdiff2"<<xdiff2<<endl;
         cout<<"ydiff2"<<ydiff2<<endl;
-       cout<<"linedistance"<<lineDist<<endl;
-         cout<<"reallMeter"<<reallMeter<<endl;
+        cout<<"linedistance"<<lineDist<<endl;
+        cout<<"reallMeter"<<reallMeter<<endl;
         pixelToMeterfinal=lineDist/reallMeter;
         // cout<<"ptm"<<lineDist<<endl;
         
@@ -372,7 +371,7 @@ framePre.release();
         
         //cout<<"pixel to metter"<<pixelToMeterfinal<<endl;
         //roi use
-      // frame= resizeWindow(frame);
+        // frame= resizeWindow(frame);
         
         
         // resize(frame, frame, cv::Size(), 0.5, 0.5);
@@ -380,7 +379,7 @@ framePre.release();
         //Rect Rec(0, 500, 1900, 380);
         //rectangle(frame, Rec, Scalar(255), 1, 8, 0);
         //Select area described by REC and result write to the Roi
-//        frame = frame(Rec);
+        //        frame = frame(Rec);
         if(waitKey(1)==27)
         {
             vector<Rect> rect2s;
@@ -401,7 +400,7 @@ framePre.release();
                 lostcount.push_back(0);
                 finish.push_back(false);
                 start.push_back(false);
-                 lost.push_back(false);
+                lost.push_back(false);
                 speedCounter.push_back(0);
                 speedAvg.push_back(0);
                 speedPreAvg.push_back(0);
@@ -415,41 +414,35 @@ framePre.release();
         stringstream ss;
         stringstream st;
         stringstream fps;
-	stringstream totalss;
         rectangle(frame, cv::Point(10, 2), cv::Point(450,20),
                   cv::Scalar(255,255,255), -1);
         ss << cap.get(CAP_PROP_POS_FRAMES);
         fps << cap.get(CAP_PROP_FPS);
         st << cap.get( CAP_PROP_POS_MSEC);
-	totalss << cap.get( CAP_PROP_FRAME_COUNT);
         string frameNumberString = ss.str();
         string fpsNumberString = fps.str();
         string timeNumberString = st.str();
         double timeFrame=stod(timeNumberString)/1000+40;
-      //  string timeNumberString = st.str();
+        //  string timeNumberString = st.str();
         putText(frame, frameNumberString.c_str(), cv::Point(15, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-putText(frame, totalFrameNumberString.c_str(), cv::Point(70, 15),
+        putText(frame, fpsNumberString.c_str(), cv::Point(70, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-
-
-        putText(frame, fpsNumberString.c_str(), cv::Point(170, 15),
-                FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
-        putText(frame, to_string(timeFrame), cv::Point(320, 15),
+        putText(frame, to_string(timeFrame), cv::Point(190, 15),
                 FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(255,0,0));
         // stop the program if no more images
         if(frame.rows==0 || frame.cols==0)
             break;
         frameCount++;
-       
-      
+        
+        
         for(unsigned i=0;i<trackers.getObjects().size();i++)
         {
-          
+            
             //string location="X: "+to_string((int)lastX[i])+" Y: "+to_string((int)lastY[i]);
             //string speedinfo="car:"+to_string(i)+" | Raw speed "+to_string(speed[i])+" | Avg speed "+to_string(speedAvg[i]*pixelToMeterfinal/59.97/skipFrame);
             //string carInfo="width: "+to_string((int)(trackers.getObjects()[i].width-20))+" px"+"| height "+to_string((int)(trackers.getObjects()[i].height-20))+"px ";
-          
+            
             if(stoi(frameNumberString)%skipFrame==0)
             {
                 //cout<<"tracker speed: "<<i<<"i"<<endl;
@@ -472,33 +465,33 @@ putText(frame, totalFrameNumberString.c_str(), cv::Point(70, 15),
                     lastX[i]=preX[i];
                     lastY[i]=preY[i];
                     speed[i]=sqrt((speedX[i]*speedX[i])-(speedY[i]*speedY[i]));
-                 
+                    
                     if(speed[i]>5&&start[i]==false)
                     {
                         outfile<<endl;
                         outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"start"<<","<<"start"<<",";
                         start[i]=true;
                     }
-                   // speedPreAvg[i]+=speed[i];
-                   // speedAvg[i]=speedPreAvg[i]/speedCounter[i];
+                    // speedPreAvg[i]+=speed[i];
+                    // speedAvg[i]=speedPreAvg[i]/speedCounter[i];
                     
-//                    cout<<"......................................."<<endl;
-//                    cout<<" preX[i]" << preX[i]<<endl;
-//                    cout<< " preX[i]" << preY[i]<<endl;
-//                    cout<<"xx" <<speedX[i]<<endl;
-//                    cout<< "yY" <<speedY[i]<<endl;
-//                    cout<<"speed" <<speed[i]<<endl;
-//                    cout<< "avg" << speedPreAvg[i]<<endl;
+                    //                    cout<<"......................................."<<endl;
+                    //                    cout<<" preX[i]" << preX[i]<<endl;
+                    //                    cout<< " preX[i]" << preY[i]<<endl;
+                    //                    cout<<"xx" <<speedX[i]<<endl;
+                    //                    cout<< "yY" <<speedY[i]<<endl;
+                    //                    cout<<"speed" <<speed[i]<<endl;
+                    //                    cout<< "avg" << speedPreAvg[i]<<endl;
                 }
-
-            if(finish[i]==false&&preX[i]>1700)
-            {
-                cout<<"finsihedddddddddddd"<<endl;
-                outfile<<endl;
+                
+                if(finish[i]==false&&preX[i]>1700)
+                {
+                    cout<<"finsihedddddddddddd"<<endl;
+                    outfile<<endl;
                     outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"finished"<<","<<"finished"<<","<<"finished"<<",";
-                finish[i]=true;
-            }
-            else if(finish[i]==false)
+                    finish[i]=true;
+                }
+                else if(finish[i]==false)
                 {
                     if(speed[i]==0&&lostcount[i]<10&&start[i]==true)
                     {
@@ -507,11 +500,11 @@ putText(frame, totalFrameNumberString.c_str(), cv::Point(70, 15),
                         lostcount[i]++;
                         outfile<<endl;
                         outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," << i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<"lost"<<","<<"lost"<<","<<"lost"<<",";
-                         rectangle( frame, trackers.getObjects()[i], Scalar( 0, 0, 255 ), 0.01, 1 );
+                        rectangle( frame, trackers.getObjects()[i], Scalar( 0, 0, 255 ), 0.01, 1 );
                         cv::putText(frame,to_string(i),
                                     cv::Point(trackers.getObjects()[i].x+50,trackers.getObjects()[i].y+20), // Coordinates
                                     cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
-                                    0.5, // Scale. 2.0 = 2x bigger
+                                    2, // Scale. 2.0 = 2x bigger
                                     cv::Scalar(0,0,255), // Color
                                     1); // Anti-alias // show image with the tracked object
                     }
@@ -521,35 +514,27 @@ putText(frame, totalFrameNumberString.c_str(), cv::Point(70, 15),
                         cv::putText(frame,to_string(i),
                                     cv::Point(trackers.getObjects()[i].x+50,trackers.getObjects()[i].y+20), // Coordinates
                                     cv::FONT_HERSHEY_COMPLEX_SMALL, // Font
-                                    0.5, // Scale. 2.0 = 2x bigger
+                                    2, // Scale. 2.0 = 2x bigger
                                     cv::Scalar(0,255,0), // Color
                                     1); // Anti-alias // show image with the tracked object
-                        double finalSpeed=0.0;
                         
-			if(speed[i]>2)
-			{
-			 finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
-
-			}
-			else{
-			 finalSpeed=0.0;
-			}
-
+                        double finalSpeed=speed[i]/pixelToMeterfinal/(skipFrame/stof(fpsNumberString));
                         outfile<<endl;
                         outfile<<frameNumberString<<","<<to_string(timeFrame)<<"," <<i<<","<<trackers.getObjects()[i].width/pixelToMeterfinal<<","<<trackers.getObjects()[i].height/pixelToMeterfinal<<","<<preX[i]<<","<<preY[i]<<","<<  speed[i]<<","<<finalSpeed<<","<<finalSpeed*meterToMPH<<",";
                     }
                 }
             }
-           
+            
         }
         trackers.update(frame);
         imshow("tracker",frame);
         frame.release();
         //quit on ESC button
-      //  if(waitKey(1)==27)break;
+        //  if(waitKey(1)==27)break;
     }
     //delete capture object
-   cap.release();
+    cap.release();
     outfile.close();
-return 0;
+    return 0;
 }
+
